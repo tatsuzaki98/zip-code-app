@@ -39,7 +39,13 @@ const FormComponent = (): JSX.Element => {
     },
     submit: (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      postalCodeCache.mutate(state.postalCode);
+      const confirmMessage = `
+        以下の内容で検索を実行します
+        郵便番号: ${state.postalCode}
+      `;
+      if (confirm(confirmMessage)) {
+        postalCodeCache.mutate(state.postalCode);
+      }
     },
   };
 
