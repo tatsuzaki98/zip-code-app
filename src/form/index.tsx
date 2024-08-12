@@ -1,15 +1,9 @@
 import { useState } from "react";
 import useSWR from "swr";
+import { fetcher, validatePostalCode } from "./utils";
 
 interface State {
   postalCode: string;
-}
-
-const fetcher = async ([url, postalCode]: [string, string]): Promise<PostalcodeResponse> => {
-  const response = await fetch(`${url}?zipcode=${postalCode}`);
-  const data = await response.json();
-  console.log(data);
-  return data;
 }
 
 const FormComponent = (): JSX.Element => {
@@ -49,6 +43,13 @@ const FormComponent = (): JSX.Element => {
     },
   };
 
+  const isCodeInvalid : boolean = (
+    !validatePostalCode(state.postalCode) && state.postalCode.length > 0
+  );
+  const isButtonDisabled: boolean = (
+    !validatePostalCode(state.postalCode) || responseCache.isValidating
+  );
+
   return (
     <form
       onSubmit={handlers.submit}
@@ -62,15 +63,25 @@ const FormComponent = (): JSX.Element => {
         type="text"
         value={state.postalCode}
         onChange={handlers.input}
-        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        className={`
+          mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none sm:text-sm ${
+          isCodeInvalid ?
+          'border-red-500 focus:ring-red-500 focus:border-red-500' :
+          'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
+        }`}
       />
+
+      {/* 警告 */}
+      {isCodeInvalid && (
+        <p className="text-red-500 text-xs">7桁の数字を入力してください</p>
+      )}
 
       {/* 検索 */}
       <button
         type="submit"
-        disabled={responseCache.isValidating}
+        disabled={isButtonDisabled}
         className={`mt-2 w-full inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
-          responseCache.isValidating
+          isButtonDisabled
             ? "bg-gray-400"
             : "bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         }`}
