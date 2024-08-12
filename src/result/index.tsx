@@ -10,16 +10,18 @@ const ResultComponent = (): JSX.Element => {
   );
 
   return (
-    <section>
-      <h3>検索結果</h3>
+    <section className="mt-8 p-4 bg-white rounded shadow-md">
+      <h3 className="text-lg font-medium text-gray-900">検索結果</h3>
 
       {/* ローディング */}
-      {responseCache.isValidating && <p>検索中...</p>}
+      {responseCache.isValidating && (
+        <p className="mt-2 text-sm text-gray-500">検索中...</p>
+      )}
 
       {/* response */}
       {responseCache?.data?.results?.map((result, index) => (
-        <div key={index}>
-          <span>
+        <div key={index} className="mt-4 p-2 border-b border-gray-200">
+          <span className="block text-sm text-gray-700">
             {result.address1}
             {result.address2}
             {result.address3}
