@@ -5,21 +5,6 @@ interface State {
   postalCode: string;
 }
 
-interface PostalcodeResponse {
-  message: string | null;
-  results: {
-    address1: string;
-    address2: string;
-    address3: string;
-    kana1: string;
-    kana2: string;
-    kana3: string;
-    prefcode: string;
-    zipcode: string;
-  }[] | null;
-  status: number;
-}
-
 const fetcher = async ([url, postalCode]: [string, string]): Promise<PostalcodeResponse> => {
   const response = await fetch(`${url}?zipcode=${postalCode}`);
   const data = await response.json();
@@ -79,23 +64,12 @@ const FormComponent = (): JSX.Element => {
       />
 
       {/* 検索 */}
-      <button type="submit">
+      <button
+        type="submit"
+        disabled={responseCache.isValidating}
+      >
         住所検索
       </button>
-
-      {/* ローディング */}
-      {responseCache.isValidating && <p>検索中...</p>}
-
-      {/* response */}
-      {responseCache?.data?.results?.map((result, index) => (
-        <div key={index}>
-          <span>
-            {result.address1}
-            {result.address2}
-            {result.address3}
-          </span>
-        </div>
-      ))}
     </form>
   );
 };
