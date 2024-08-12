@@ -18,7 +18,17 @@ const ResultComponent = (): JSX.Element => {
         <p className="mt-2 text-sm text-gray-500">検索中...</p>
       )}
 
-      {/* response */}
+      {/* エラー */}
+      {responseCache.error && (
+        <p className="mt-2 text-sm text-gray-500">エラーが発生しました</p>
+      )}
+
+      {/* データが空 */}
+      {responseCache.data?.results == null && (
+        <p className="mt-2 text-sm text-gray-500">該当する住所が見つかりませんでした</p>
+      )}
+
+      {/* 正常終了 */}
       {responseCache?.data?.results?.map((result, index) => (
         <div key={index} className="mt-4 p-2 border-b border-gray-200">
           <span className="block text-sm text-gray-700">
